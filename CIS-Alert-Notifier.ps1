@@ -63,7 +63,7 @@ foreach ($Row in $AlertTable)
     $outputl = $outputl + "</p>"
 
     #send the email
-    if ($Row.email -notcontains "@ciscatpro.org"){
+    if ($Row.email -notlike "*@ciscatpro.org"){
         Send-MailMessage -From $MailFromEmail -To $Row.email -SmtpServer $MailServer -Subject ("CCPD Alert: " + $Row.title) -Body $outputl -BodyAsHtml
     }
 }
