@@ -1,4 +1,6 @@
-﻿##################################
+[void][System.Reflection.Assembly]::LoadWithPartialName("MySql.Data")
+
+##################################
 #Edit these values as you see fit
 $DBLocation = "localhost"
 $DBSchema = "CCPD"
@@ -19,18 +21,18 @@ if (Test-Path -Path LastReadRec.dat -PathType Leaf)
 }
 
 #Open SQL Connection
-$myconnection = New-Object System.Data.SqlClient.SqlConnection
+$myconnection = New-Object MySql.Data.MySqlClient.MySqlConnection
 $myconnection.ConnectionString = "Database=" + $DBSchema + ";server=" + $DBLocation + ";Persist Security Info=false;user id=" + $DBUser + ";pwd=" + $DBPass + ";"
 $myconnection.Open()
 $command = $myconnection.CreateCommand()
 
 #Get user list
-#$command.CommandText = "select id, first_name, email from dbo.ccpd_user";
+#$command.CommandText = "select id, first_name, email from ccpd.user";
 #$Usertable = New-Object System.Data.DataTable
 #$UserTable.Load($command.ExecuteReader())
 
 #Get unread alerts
-$command.CommandText = "select AlertTb.id, AlertTb.title, AlertTb.message, UserTb.first_name, UserTb.email from dbo.alert_instance as AlertTb inner join dbo.ccpd_user as UserTb on AlertTb.recipient_id = UserTb.id where AlertTb.is_read=0 and AlertTb.id>" + $LastReadRec + " order by AlertTb.id;"
+$command.CommandText = "select AlertTb.id, AlertTb.title, AlertTb.message, UserTb.first_name, UserTb.email from " + $DBSchema + ".alert_instance as AlertTb inner join " + $DBSchema + ".user as UserTb on AlertTb.recipient_id = UserTb.id where AlertTb.is_read=0 and AlertTb.id>" + $LastReadRec + " order by AlertTb.id;"
 $AlertTable = New-Object System.Data.DataTable
 $AlertTable.Load($command.ExecuteReader())
 
